@@ -1,124 +1,71 @@
-# 🎮 Minigames Collection
+# Minigames Collection
 
-An interactive minigames website featuring a collection of fun games to challenge your skills.
+This is my mini browser-game project built with plain HTML, CSS, and JavaScript.
 
-## 🎯 Features
+It’s a 4-game challenge with a final results page that tracks real completion stats.
 
-- **4 Interactive Games:**
-  - Trivia Quiz
-  - Memory Matching Game
-  - Number Puzzle
-  - Daily Wordle
-  
-- **Modern Gaming Design:**
-  - Green/blue color palette
-  - Floating stars animations
-  - Smooth transitions and effects
-  - Fully responsive (mobile & desktop)
+## What I Built
 
-- **Completion Page:**
-  - Trophy animation
-  - Success celebration
-  - Share and replay options
-  - Confetti effects
+- Trivia Quiz
+- Memory Match
+- Number Puzzle
+- Daily-style 5-letter Wordle
+- Final results page with:
+  - actual score (`x/4`)
+  - actual completion rate (`%`)
+  - total finish time (shown when all 4 games are completed)
 
-## 📁 Project Structure
+## Project Structure
 
-```
+```text
 minigames/
-├── index.html          # Main games flow page
-├── invite.html         # Completion results page
+├── index.html
+├── invite.html
 ├── css/
-│   └── styles.css      # All styling and animations
+│   └── styles.css
 ├── js/
-│   ├── main.js         # Main app logic
-│   ├── puzzles.js      # Game logic and interactions
-│   ├── wordle.js       # Wordle game logic
-│   ├── stars.js        # Floating stars animation
-│   └── invite.js       # Completion page interactions
-├── images/             # Place your images here (optional)
-└── audio/              # Place your music file here (optional)
+│   ├── main.js
+│   ├── puzzles.js
+│   ├── wordle.js
+│   ├── stars.js
+│   └── invite.js
+├── images/
+└── audio/
 ```
 
-## 🎮 How to Use
+## How It Works
 
-1. **Open the website:** Open `indexfour games in sequence
-3. **Wordle Notes:** 
-   - A new word is selected each day
-   - You have 6 attempts to guess the 5-letter word
-   - 🟩 Green = correct letter, correct position
-   - 🟨 Yellow = correct letter, wrong position
-   - ⬜ Gray = letter not in word
-4. **View your score:** See the completion results page
-5. **Replay or share:** Play again tomorrow for a new Wordle word!
+1. Start from `index.html`
+2. Play through 4 games in sequence
+3. Progress is tracked during the run
+4. On the final page (`invite.html`), score and completion rate are calculated from stored run data
+5. If all 4 are completed, finish time is shown
 
-## ✏️ Customization
+## Run Locally
 
-### Update Quiz Questions
-Edit the questions in `index.html` (lines 33-54):
-```html
-<div class="question-block active" data-question="1">
-    <p class="question">Your question here?</p>
-    <div class="options">
-        <button class="option-btn" data-answer="correct">Correct answer</button>
-        <button class="option-btn" data-answer="wrong">Wrong answer</button>
-    </div>
-</div>
+You can open `index.html` directly, or serve it with a local static server:
+
+```bash
+python3 -m http.server 8080
 ```
 
-### Change Puzzle Answer
-Edit `js/puzzles.js` (line 15):
-```javascript
-const CORRECT_PASSWORD = '14'; // Change to the correct answer
-```
+Then open `http://localhost:8080`.
 
-### Customize Memory Game Symbols
-Edit `js/puzzles.js` (line 68) to change the card symbols:
-```javascript
-const symbols = ['🎮', '🎯', '🎲', '🏆', '⭐', '🌟'];
-```
+## Notes
 
-### Customize Wordle Word List
-Edit `js/wordle.js` (line 32) - update the fallback word list:
-```javascript
-wordList = ['ABOUT', 'ACTOR', 'ACUTE', ...];
-```
+- Game stats are stored in `localStorage` under `minigames_stats_v1`.
+- Wordle uses a fetched word list with a built-in fallback list.
+- UI is responsive for desktop and mobile.
 
-The Wordle fetches a word list from a free API and automatically selects a different word each day based on the current date.st symbols = ['🎮', '🎯', '🎲', '🏆', '⭐', '🌟'];
-```
+## Customization
 
-## 🎨 Color Scheme
+- Quiz questions/options: `index.html`
+- Number puzzle answer: `js/puzzles.js` (`CORRECT_PASSWORD`)
+- Wordle behavior/list: `js/wordle.js`
+- Theme and layout: `css/styles.css`
 
-- Primary Green: `#4CAF50`
-- Primary Light: `#81C784`
-- Primary Dark: `#388E3C`
-- Secondary Blue: `#2196F3`
-- Accent Orange: `#FF9800`
-- Background Light: `#F5F5F5`
+## Tech
 
-## 📱 Browser Support
-
-Works on all modern browsers:
-- Chrome
-- Firefox
-- Safari
-- Edge
-
-## 💡 Tips
-
-- Test on mobile devices to ensure responsive design works
-- Customize symbols in memory game with your favorite emojis
-- Update quiz questions with your own trivia
-- Change the puzzle answer to a meaningful number
-- Customize colors in `css/styles.css` `:root` section
-
-## 🚀 Deployment
-
-To share online:
-1. Upload all files to a web hosting service (GitHub Pages, Netlify, Vercel)
-2. Send the link to your friends
-3. Challenge them to beat your score!
-
----
-
-Made with 🎮 for Minigames Challenge 2026
+- HTML5
+- CSS3 (animations + responsive layout)
+- Vanilla JavaScript (DOM + game state + localStorage)
