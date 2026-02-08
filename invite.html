@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏆 Congratulations! 🏆</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="completion-page">
+    <!-- Floating Stars Background -->
+    <div class="stars-container" id="starsContainer"></div>
+
+    <!-- Main Completion Container -->
+    <div class="completion-wrapper">
+        <div class="completion-card">
+            <!-- Completion Header -->
+            <div class="completion-header">
+                <div class="stars-banner">⭐ 🎮 ⭐ 🎮 ⭐</div>
+                <h1 class="completion-title">Congratulations!<br>You Completed All Games! 🎉</h1>
+                <div class="decorative-line"></div>
+            </div>
+
+            <!-- Completion Details -->
+            <div class="completion-body">
+                <div class="detail-section">
+                    <div class="detail-icon">🏆</div>
+                    <div class="detail-content">
+                        <h3>Achievement Unlocked</h3>
+                        <p id="achievementText">You've completed 0 of 4 games.<br>Keep going!</p>
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <div class="detail-icon">🎯</div>
+                    <div class="detail-content">
+                        <h3>Your Score</h3>
+                        <p id="scoreText">0/4 complete<br>0% Completion Rate</p>
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <div class="detail-icon">🌟</div>
+                    <div class="detail-content">
+                        <h3>Completion Time</h3>
+                        <p id="timeText">Complete all 4 games for a final time.</p>
+                    </div>
+                </div>
+
+                <div class="completion-note">
+                    <p id="completionNote"><strong>Nice effort!</strong> Jump back in and finish all 4 games. 🎮</p>
+                </div>
+            </div>
+
+            <!-- Interactive Buttons -->
+            <div class="completion-actions">
+                <button class="btn btn-accept" onclick="playAgain()">
+                    Play Again 🎮
+                </button>
+                <button class="btn btn-surprise" onclick="shareSuccess()">
+                    Share Success 🌟
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal hidden" id="successModal">
+        <div class="modal-content celebration">
+            <div class="confetti-container" id="confettiContainer"></div>
+            <h2>🎉 Amazing! 🎉</h2>
+            <p class="modal-text">
+                You've successfully completed all the games!<br><br>
+                Your dedication and skill are impressive.<br>
+                Keep challenging yourself!
+            </p>
+            <button class="btn btn-close" onclick="closeModal('successModal')">Close ✓</button>
+        </div>
+    </div>
+
+    <!-- Share Modal -->
+    <div class="modal hidden" id="shareModal">
+        <div class="modal-content">
+            <h2>Share Your Success!</h2>
+            <p class="modal-text" id="shareMessage">
+                You completed 0/4 games. 🎮<br><br>
+                Challenge your friends to beat your score!
+            </p>
+            <button class="btn btn-close" onclick="closeModal('shareModal')">Close ✓</button>
+        </div>
+    </div>
+
+    <script src="js/stars.js"></script>
+    <script>
+        const GAME_STATS_KEY = 'minigames_stats_v1';
+        const TOTAL_GAMES = 4;
+
+        function readStats() {
+            try {
+                const raw = localStorage.getItem(GAME_STATS_KEY);
+                if (!raw) {
+                    return { puzzlesCompleted: 0, startedAt: null, finishedAt: null };
+                }
+
+                const parsed = JSON.parse(raw);
+                return {
+                    puzzlesCompleted: Number.isFinite(parsed.puzzlesCompleted) ? parsed.puzzlesCompleted : 0,
+                    startedAt: parsed.startedAt ?? null,
+                    finishedAt: parsed.finishedAt ?? null
+                };
+            } catch (error) {
+                return { puzzlesCompleted: 0, startedAt: null, finishedAt: null };
+            }
+        }
+
+        function formatDuration(ms) {
+            if (!Number.isFinite(ms) || ms <= 0) {
+                return null;
+            }
+
+            const totalSeconds = Math.floor(ms / 1000);
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = totalSeconds % 60;
+            return `${minutes}m ${seconds}s`;
+        }
+
+        function renderCompletionStats() {
+            const stats = readStats();
+            const completed = Math.min(Math.max(stats.puzzlesCompleted, 0), TOTAL_GAMES);
+            const rate = Math.round((completed / TOTAL_GAMES) * 100);
+
+            const achievementText = document.getElementById('achievementText');
+            const scoreText = document.getElementById('scoreText');
+            const timeText = document.getElementById('timeText');
+            const completionNote = document.getElementById('completionNote');
+            const shareMessage = document.getElementById('shareMessage');
+
+            achievementText.innerHTML = `You've completed ${completed} of ${TOTAL_GAMES} games.<br>${completed === TOTAL_GAMES ? 'All challenges cleared!' : 'Keep going to finish all challenges!'}`;
+            scoreText.innerHTML = `${completed}/${TOTAL_GAMES} complete<br>${rate}% Completion Rate`;
+
+            let timeLine = 'Complete all 4 games for a final time.';
+            let shareTimeLine = '';
+
+            if (completed === TOTAL_GAMES && stats.startedAt && stats.finishedAt && stats.finishedAt >= stats.startedAt) {
+                const durationLabel = formatDuration(stats.finishedAt - stats.startedAt);
+                if (durationLabel) {
+                    timeLine = `Finished all 4 games in ${durationLabel}.`;
+                    shareTimeLine = `<br><br>Finish time: ${durationLabel}`;
+                }
+            }
+
+            timeText.textContent = timeLine;
+
+            if (completed === TOTAL_GAMES) {
+                completionNote.innerHTML = '<strong>Perfect run!</strong> You hit 100% and cleared all 4 games. 🎮';
+            } else {
+                completionNote.innerHTML = `<strong>Nice effort!</strong> You finished ${completed}/4 so far. 🎮`;
+            }
+
+            shareMessage.innerHTML = `You completed ${completed}/${TOTAL_GAMES} games (${rate}%). 🎮<br><br>Challenge your friends to beat your score!${shareTimeLine}`;
+        }
+
+        function playAgain() {
+            window.location.href = 'index.html';
+        }
+
+        function shareSuccess() {
+            const modal = document.getElementById('shareModal');
+            modal.classList.remove('hidden');
+            createConfetti();
+        }
+
+        function createConfetti() {
+            const container = document.getElementById('confettiContainer');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'confettiContainer';
+                container.className = 'confetti-container';
+                document.querySelector('.modal-content').appendChild(container);
+            }
+            
+            const colors = ['#4CAF50', '#2196F3', '#FF9800', '#9C27B0', '#00BCD4'];
+            
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDelay = Math.random() * 0.5 + 's';
+                confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                
+                container.appendChild(confetti);
+                
+                setTimeout(() => confetti.remove(), 3000);
+            }
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.classList.add('hidden');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCompletionStats();
+
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        modal.classList.add('hidden');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
